@@ -30,8 +30,9 @@ if args.tests:
                              "-username", args.username,
                              "-password", args.password,
                              "-projectPath", args.projectpath,
-                             "-logFile", args.projectpath + "\\log.txt",
+                             "-logFile", args.projectpath + "\\Build\\log.txt",
                              "-batchmode",
+                             "-editorTestsResultFile", args.projectpath + "\\Build\\testresults.xml",
                              "-runEditorTests"])
 
     if result.returncode != 0:
@@ -46,7 +47,7 @@ for platform in args.platforms:
                              "-username", args.username,
                              "-password", args.password,
                              "-projectPath", args.projectpath,
-                             "-logFile", args.projectpath + "\\log.txt",
+                             "-logFile", args.projectpath + "\\Build\\log.txt",
                              "-batchmode",
                              "-quit",
                              "-executeMethod", "Assets.Scripts.Editor.BuildUtils.Build",
