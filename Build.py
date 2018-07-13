@@ -5,6 +5,7 @@
 #          --unitypath "C:\Unitypath"
 #          --projectpath "C:\Projectpath"
 #          --tests
+#          --debug
 
 import subprocess
 import argparse
@@ -22,6 +23,7 @@ parser.add_argument('--debug', action='store_true', help='Run build in debug mod
 args = parser.parse_args()
 
 if args.tests:
+    print("Starting tests...")
     start_time = time.time()
     result = subprocess.run([args.unitypath,
                              "-serial", args.serial,
@@ -31,8 +33,27 @@ if args.tests:
                              "-logFile", args.projectpath + "\\log.txt",
                              "-batchmode",
                              "-runEditorTests"])
+
     if result.returncode != 0:
         raise ValueError('Test failed aborting build.')
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print("Finished successfully in %s seconds." % (time.time() - start_time))
 
-print(args.platforms)
+for platform in args.platforms:
+    print("Starting %s build..." % platform)
+    start_time = time.time()
+    result = subprocess.run([args.unitypath,
+                             "-serial", args.serial,
+                             "-username", args.username,
+                             "-password", args.password,
+                             "-projectPath", args.projectpath,
+                             "-logFile", args.projectpath + "\\log.txt",
+                             "-batchmode",
+                             "-quit",
+                             "-executeMethod", "Assets.Scripts.Editor.BuildUtils.Build",
+                             platform,
+                             args.projectpath + "\\Build\\" + platform,
+                             'debug' if args.debug else ''])
+
+    if result.returncode != 0:
+        raise ValueError('Build failed.')
+    print("Finished successfully in %s seconds." % (time.time() - start_time))
